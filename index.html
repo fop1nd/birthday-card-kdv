@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Для тебя ❤️</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* =========================
+           ОБЩИЕ ЭКРАНЫ
+        ========================= */
+
+        .screen {
+            position: fixed;
+            inset: 0;
+
+            width: 100%;
+            height: 100dvh;
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            opacity: 0;
+            visibility: hidden;
+
+            transition:
+                opacity 0.9s ease,
+                visibility 0.9s ease;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 390px;
+            padding: 32px;
+
+            text-align: center;
+
+            position: relative;
+            z-index: 2;
+        }
+
+        /* =========================
+           ЭКРАН 1
+        ========================= */
+
+        .welcome {
+            background: #b9ddf2;
+            color: #ffffff;
+        }
+
+        .welcome::before,
+        .welcome::after {
+            content: "";
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            background: rgba(255, 255, 255, 0.14);
+
+            filter: blur(2px);
+        }
+
+        .welcome::before {
+            width: 280px;
+            height: 280px;
+
+            top: -100px;
+            right: -100px;
+        }
+
+        .welcome::after {
+            width: 220px;
+            height: 220px;
+
+            bottom: -80px;
+            left: -80px;
+        }
+
+        .small-text {
+            font-size: 15px;
+            letter-spacing: 1px;
+
+            opacity: 0.85;
+
+            margin-bottom: 18px;
+
+            animation: textAppear 1s ease 0.3s both;
+        }
+
+        .main-title {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(32px, 9vw, 42px);
+            line-height: 1.15;
+            font-weight: 400;
+
+            margin-bottom: 38px;
+
+            animation: textAppear 1s ease 0.55s both;
+        }
+
+        .open-button,
+        .continue-button,
+        .story-button {
+            border: none;
+            outline: none;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
+        }
+
+        .open-button {
+            padding: 16px 34px;
+
+            background: rgba(255, 255, 255, 0.95);
+            color: #76aeca;
+
+            font-size: 16px;
+            font-weight: 600;
+
+            box-shadow:
+                0 10px 30px rgba(60, 120, 160, 0.18);
+
+            animation: buttonAppear 1s ease 0.9s both;
+        }
+
+        .open-button:active,
+        .continue-button:active,
+        .story-button:active {
+            transform: scale(0.95);
+        }
+
+        .heart {
+            display: inline-block;
+
+            margin-left: 5px;
+
+            animation: heartbeat 1.8s ease-in-out infinite;
+        }
+
+        .hint {
+            position: absolute;
+
+            bottom: 28px;
+            left: 0;
+            right: 0;
+
+            text-align: center;
+
+            font-size: 12px;
+            letter-spacing: 0.8px;
+
+            opacity: 0.55;
+
+            animation: textAppear 1s ease 1.3s both;
+        }
+
+        /* =========================
+           ЭКРАН 2
+        ========================= */
+
+        .birthday {
+            background: #fbe7ed;
+            color: #76545d;
+        }
+
+        .birthday::before {
+            content: "♡";
+
+            position: absolute;
+
+            top: 8%;
+            left: 12%;
+
+            font-size: 80px;
+
+            color: rgba(255, 255, 255, 0.55);
+
+            transform: rotate(-15deg);
+        }
+
+        .birthday::after {
+            content: "♡";
+
+            position: absolute;
+
+            right: 10%;
+            bottom: 8%;
+
+            font-size: 100px;
+
+            color: rgba(255, 255, 255, 0.5);
+
+            transform: rotate(15deg);
+        }
+
+        .birthday-content {
+            opacity: 0;
+            transform: translateY(25px);
+
+            transition:
+                opacity 1s ease 0.3s,
+                transform 1s ease 0.3s;
+        }
+
+        .birthday.active .birthday-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .birthday-label {
+            font-size: 14px;
+
+            letter-spacing: 2px;
+            text-transform: uppercase;
+
+            color: #b98591;
+
+            margin-bottom: 20px;
+        }
+
+        .birthday-title {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(32px, 9vw, 42px);
+            line-height: 1.15;
+            font-weight: 400;
+
+            color: #694952;
+
+            margin-bottom: 24px;
+        }
+
+        .birthday-text {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 18px;
+            line-height: 1.7;
+
+            color: #795b63;
+
+            margin-bottom: 30px;
+        }
+
+        .continue-button {
+            padding: 14px 28px;
+
+            background: rgba(255, 255, 255, 0.55);
+
+            border: 1px solid rgba(150, 95, 108, 0.25);
+
+            color: #79515c;
+
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* =========================
+           ЭКРАН ИСТОРИИ
+        ========================= */
+
+        .story {
+            background: #faf5f3;
+            color: #604c50;
+        }
+
+        .story-content {
+            max-width: 430px;
+            padding: 25px 25px 30px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            opacity: 0;
+            transform: translateY(25px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .story.active .story-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-number {
+            font-size: 12px;
+            letter-spacing: 2px;
+
+            color: #b58d96;
+
+            margin-bottom: 15px;
+        }
+
+        .story-title {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(24px, 6vw, 31px);
+            line-height: 1.25;
+            font-weight: 400;
+
+            color: #60484e;
+
+            margin-bottom: 20px;
+        }
+
+        .photo-frame {
+            width: min(82vw, 330px);
+            height: min(58vh, 440px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 9px;
+
+            background: #ffffff;
+
+            border-radius: 5px;
+
+            box-shadow:
+                0 15px 45px rgba(90, 60, 65, 0.16);
+
+            transform: rotate(-1deg);
+
+            margin-bottom: 22px;
+        }
+
+        .story-photo {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            border-radius: 2px;
+
+            display: block;
+        }
+
+        .story-text {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 17px;
+            line-height: 1.55;
+
+            color: #765d63;
+
+            max-width: 340px;
+
+            margin-bottom: 22px;
+        }
+
+        .story-text.small {
+            font-size: 15px;
+            color: #a07880;
+
+            margin-top: -10px;
+        }
+
+        .story-button {
+            padding: 13px 27px;
+
+            background: rgba(255, 255, 255, 0.8);
+
+            border: 1px solid rgba(130, 90, 100, 0.18);
+
+            color: #76515b;
+
+            font-size: 15px;
+            font-weight: 600;
+
+            box-shadow:
+                0 7px 20px rgba(80, 50, 60, 0.08);
+        }
+
+        /* =========================
+           ФИНАЛЬНЫЙ ЭКРАН
+        ========================= */
+
+        .final {
+            background: #f8e8ed;
+            color: #684b53;
+
+            overflow-y: auto;
+        }
+
+        .final-content {
+            max-width: 430px;
+
+            padding: 35px 25px 45px;
+
+            text-align: center;
+
+            opacity: 0;
+            transform: translateY(30px);
+
+            transition:
+                opacity 1s ease,
+                transform 1s ease;
+        }
+
+        .final.active .final-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .final-photo {
+            width: min(78vw, 320px);
+            height: min(42vh, 390px);
+
+            object-fit: contain;
+
+            border-radius: 4px;
+
+            padding: 8px;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 18px 50px rgba(100, 65, 75, 0.18);
+
+            transform: rotate(1deg);
+
+            margin: 0 auto 25px;
+
+            display: block;
+        }
+
+        .final-title {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: clamp(27px, 7vw, 36px);
+            line-height: 1.2;
+            font-weight: 400;
+
+            color: #62464e;
+
+            margin-bottom: 22px;
+        }
+
+        .final-text {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 16px;
+            line-height: 1.65;
+
+            color: #765a61;
+
+            text-align: left;
+
+            margin-bottom: 22px;
+        }
+
+        .final-last {
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-size: 20px;
+            line-height: 1.5;
+
+            color: #694750;
+
+            margin-top: 15px;
+        }
+
+        .final-heart {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            font-size: 25px;
+
+            animation: heartbeat 1.8s ease-in-out infinite;
+        }
+
+        /* =========================
+           АНИМАЦИИ
+        ========================= */
+
+        @keyframes textAppear {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes buttonAppear {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        /* =========================
+           МОБИЛЬНЫЙ ЭКРАН
+        ========================= */
+
+        @media (max-height: 700px) {
+
+            .story-content {
+                padding-top: 15px;
+            }
+
+            .story-title {
+                margin-bottom: 12px;
+                font-size: 23px;
+            }
+
+            .photo-frame {
+                height: 48vh;
+                margin-bottom: 15px;
+            }
+
+            .story-text {
+                font-size: 15px;
+                margin-bottom: 14px;
+            }
+
+            .final-content {
+                padding-top: 20px;
+            }
+
+            .final-photo {
+                height: 34vh;
+                margin-bottom: 18px;
+            }
+
+            .final-title {
+                font-size: 27px;
+                margin-bottom: 15px;
+            }
+
+            .final-text {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         ЭКРАН 1
+    ========================= -->
+
+    <section class="screen welcome active" id="screen1">
+
+        <div class="content">
+
+            <div class="small-text">
+                ДАШУЛИК
+            </div>
+
+            <h1 class="main-title">
+                У меня для тебя<br>
+                кое-что есть…
+            </h1>
+
+            <button class="open-button" id="openButton">
+                Открыть <span class="heart">❤️</span>
+            </button>
+
+        </div>
+
+        <div class="hint">
+            нажми, когда будешь готова
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ЭКРАН 2
+    ========================= -->
+
+    <section class="screen birthday" id="screen2">
+
+        <div class="content birthday-content">
+
+            <div class="birthday-label">
+                для самой любимой
+            </div>
+
+            <h2 class="birthday-title">
+                С днём рождения,<br>
+                моя любимая ❤️
+            </h2>
+
+            <p class="birthday-text">
+                Сегодня твой день и я очень хочу
+                подарить тебе улыбку своим
+                небольшим творением
+            </p>
+
+            <button class="continue-button" id="startStoryButton">
+                Дальше →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ЭКРАН ИСТОРИИ
+    ========================= -->
+
+    <section class="screen story" id="storyScreen">
+
+        <div class="content story-content">
+
+            <div class="story-number" id="storyNumber">
+                НАША ИСТОРИЯ
+            </div>
+
+            <h2 class="story-title" id="storyTitle">
+                Началось всё с этого 😂
+            </h2>
+
+            <div class="photo-frame">
+                <img
+                    class="story-photo"
+                    id="storyPhoto"
+                    src="photos/01.jpg"
+                    alt="Наша фотография"
+                >
+            </div>
+
+            <p class="story-text" id="storyText">
+                PS. Пользуясь случаем, хочу сказать спасибо Максиму и Соне 😂
+            </p>
+
+            <button class="story-button" id="nextStoryButton">
+                Дальше →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ФИНАЛЬНЫЙ ЭКРАН
+    ========================= -->
+
+    <section class="screen final" id="finalScreen">
+
+        <div class="final-content">
+
+            <img
+                class="final-photo"
+                src="photos/10.jpeg"
+                alt="Моя любимая"
+            >
+
+            <h2 class="final-title">
+                С днём рождения,<br>
+                моя любимая ❤️
+            </h2>
+
+            <p class="final-text">
+
+                Ты — самое дорогое, что есть в моей жизни.
+
+                <br><br>
+
+                Я безумно рад, что встретил тебя,
+                и очень сильно тебя люблю.
+
+                <br><br>
+
+                В твой 21-й день рождения я хочу пожелать
+                тебе всегда оставаться такой же красивой,
+                радостной, умной и доброй.
+
+                <br><br>
+
+                Пусть все твои мечты сбываются,
+                а я очень хочу быть рядом и помогать тебе
+                в их осуществлении — неважно, насколько
+                сложным будет этот путь.
+
+                <br><br>
+
+                Я всегда буду рядом.
+                Ты всегда сможешь положиться на меня
+                и знать, что я тебя поддержу.
+
+                <br><br>
+
+                И сегодня я больше всего хочу,
+                чтобы твоя улыбка сияла так же ярко,
+                как твои прекрасные голубые глаза,
+                и чтобы эта улыбка никогда не гасла.
+
+            </p>
+
+            <div class="final-last">
+                Я очень тебя люблю. ❤️
+            </div>
+
+            <div class="final-heart">
+                ❤️
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <script>
+
+        /* =========================
+           ЭКРАНЫ
+        ========================= */
+
+        const screen1 = document.getElementById("screen1");
+        const screen2 = document.getElementById("screen2");
+        const storyScreen = document.getElementById("storyScreen");
+        const finalScreen = document.getElementById("finalScreen");
+
+
+        /* =========================
+           КНОПКИ
+        ========================= */
+
+        const openButton = document.getElementById("openButton");
+        const startStoryButton = document.getElementById("startStoryButton");
+        const nextStoryButton = document.getElementById("nextStoryButton");
+
+
+        /* =========================
+           ЭЛЕМЕНТЫ ИСТОРИИ
+        ========================= */
+
+        const storyNumber = document.getElementById("storyNumber");
+        const storyTitle = document.getElementById("storyTitle");
+        const storyPhoto = document.getElementById("storyPhoto");
+        const storyText = document.getElementById("storyText");
+
+
+        /* =========================
+           ФОТО И ТЕКСТЫ
+        ========================= */
+
+        const story = [
+
+            {
+                photo: "photos/01.jpg",
+
+                number: "01",
+
+                title: "Вот так началась наша история 😂",
+
+                text: "PS. Пользуясь случаем, хочу сказать спасибо Максиму и Соне 😂"
+            },
+
+            {
+                photo: "photos/22.jpeg",
+
+                number: "02",
+
+                title: "Наша первая совместная фотография 💙",
+
+                text: ""
+            },
+
+            {
+                photo: "photos/02.jpg",
+
+                number: "03",
+
+                title: "Наша первая фотосессия со светом от двух фонариков телефонов 😂❤️",
+
+                text: "Было очень весело."
+            },
+
+            {
+                photo: "photos/03.jpg",
+
+                number: "04",
+
+                title: "Помню, как ты просила меня сделать не тупое выражение лица 😂",
+
+                text: "Это было очень смешно 😂"
+            },
+
+            {
+                photo: "photos/77.jpeg",
+
+                number: "05",
+
+                title: "Моя спящая звёздочка ⭐❤️",
+
+                text: ""
+            },
+
+            {
+                photo: "photos/04.jpg",
+
+                number: "06",
+
+                title: "Заставила меня пройти бьюти-процедуры 😂",
+
+                text: ""
+            },
+
+            {
+                photo: "photos/05.jpeg",
+
+                number: "07",
+
+                title: "Ещё немного бьюти-процедур 😂😂😂",
+
+                text: ""
+            },
+
+            {
+                photo: "photos/06.jpeg",
+
+                number: "08",
+
+                title: "Любишь меня мучать, когда я сонный 😂",
+
+                text: ""
+            },
+
+            {
+                photo: "photos/08.jpeg",
+
+                number: "09",
+
+                title: "Ты делаешь меня счастливым каждый день ❤️",
+
+                text: ""
+            }
+
+        ];
+
+
+        let currentStory = 0;
+
+
+        /* =========================
+           ПЕРВЫЙ ЭКРАН → ВТОРОЙ
+        ========================= */
+
+        openButton.addEventListener("click", () => {
+
+            screen1.classList.remove("active");
+
+            setTimeout(() => {
+
+                screen2.classList.add("active");
+
+            }, 500);
+
+        });
+
+
+        /* =========================
+           ВТОРОЙ → ИСТОРИЯ
+        ========================= */
+
+        startStoryButton.addEventListener("click", () => {
+
+            screen2.classList.remove("active");
+
+            currentStory = 0;
+
+            updateStory();
+
+            setTimeout(() => {
+
+                storyScreen.classList.add("active");
+
+            }, 500);
+
+        });
+
+
+        /* =========================
+           ОБНОВЛЕНИЕ ФОТО
+        ========================= */
+
+        function updateStory() {
+
+            const item = story[currentStory];
+
+            storyNumber.textContent =
+                `МОМЕНТ ${item.number}`;
+
+            storyTitle.textContent =
+                item.title;
+
+            storyPhoto.src =
+                item.photo;
+
+            storyText.textContent =
+                item.text;
+
+
+            if (item.text === "") {
+
+                storyText.style.display = "none";
+
+            } else {
+
+                storyText.style.display = "block";
+
+            }
+
+
+            /*
+             * Маленькая анимация
+             * при смене фотографии
+             */
+
+            storyScreen.classList.remove("active");
+
+            setTimeout(() => {
+
+                storyScreen.classList.add("active");
+
+            }, 80);
+
+        }
+
+
+        /* =========================
+           СЛЕДУЮЩАЯ ФОТО
+        ========================= */
+
+        nextStoryButton.addEventListener("click", () => {
+
+            if (currentStory < story.length - 1) {
+
+                currentStory++;
+
+                updateStory();
+
+            } else {
+
+                storyScreen.classList.remove("active");
+
+                setTimeout(() => {
+
+                    finalScreen.classList.add("active");
+
+                }, 500);
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
